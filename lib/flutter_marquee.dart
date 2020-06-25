@@ -26,6 +26,7 @@ class Marquee extends StatefulWidget {
 class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   ScrollController _scrollController;
+  VoidCallback listener;
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
@@ -55,19 +56,20 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       CurveTween(curve: Curves.easeOutQuint),
     );
 
-    _animationController.addListener(() async {
+    listener = () async {
       if (_animationController.isCompleted) {
         _scrollController.jumpTo(0.0);
         await Future.delayed(new Duration(seconds: 1));
         _animationController.reset();
         _animationController.forward();
       } else if (_scrollController.offset <
-              txtSize.width * _animationController.value &&
+          txtSize.width * _animationController.value &&
           _scrollController.offset < txtSize.width) {
         _scrollController.animateTo(txtSize.width * _animationController.value,
             duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
       }
-    });
+    };
+    _animationController.addListener(listener);
     _animationController.forward();
   }
 
@@ -77,6 +79,21 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     if (oldWidget.str != widget.str) {
       final Size txtSize = _textSize(widget.str, widget.textStyle);
       _animationController.reset();
+      _animationController.removeListener(listener);
+      listener = () async {
+        if (_animationController.isCompleted) {
+          _scrollController.jumpTo(0.0);
+          await Future.delayed(new Duration(seconds: 1));
+          _animationController.reset();
+          _animationController.forward();
+        } else if (_scrollController.offset <
+            txtSize.width * _animationController.value &&
+            _scrollController.offset < txtSize.width) {
+          _scrollController.animateTo(txtSize.width * _animationController.value,
+              duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
+        }
+      };
+      _animationController.addListener(listener);
       _animationController.duration = Duration(
           milliseconds:
           (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
