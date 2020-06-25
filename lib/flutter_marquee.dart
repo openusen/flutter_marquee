@@ -75,36 +75,13 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   void didUpdateWidget(Marquee oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.str != widget.str) {
-      _animationController.dispose();
-
-      _scrollController = ScrollController(
-        initialScrollOffset: 0.0,
-      );
       final Size txtSize = _textSize(widget.str, widget.textStyle);
-      _animationController = AnimationController(
-        vsync: this,
-        duration: Duration(
-            milliseconds:
-            (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
-                .ceil()),
-      );
-      _animationController.drive(
-        CurveTween(curve: Curves.easeOutQuint),
-      );
-
-      _animationController.addListener(() async {
-        if (_animationController.isCompleted) {
-          _scrollController.jumpTo(0.0);
-          await Future.delayed(new Duration(seconds: 1));
-          _animationController.reset();
-          _animationController.forward();
-        } else if (_scrollController.offset <
-            txtSize.width * _animationController.value &&
-            _scrollController.offset < txtSize.width) {
-          _scrollController.animateTo(txtSize.width * _animationController.value,
-              duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
-        }
-      });
+      _animationController.reset();
+      _animationController.duration = Duration(
+          milliseconds:
+          (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
+              .ceil());
+      _scrollController.jumpTo(0.0);
       _animationController.forward();
     }
   }
