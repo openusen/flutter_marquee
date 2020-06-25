@@ -9,6 +9,7 @@ class Marquee extends StatefulWidget {
       @required this.str,
       @required this.containerWidth,
       this.textStyle = const TextStyle(),
+      this.strutStyle = const StrutStyle(),
       this.baseMilliseconds = 4000})
       : super(key: key);
 
@@ -16,13 +17,13 @@ class Marquee extends StatefulWidget {
   final double containerWidth;
   final TextStyle textStyle;
   final double baseMilliseconds;
+  final StrutStyle strutStyle;
 
   @override
   _MarqueeState createState() => _MarqueeState();
 }
 
-class _MarqueeState extends State<Marquee>
-    with SingleTickerProviderStateMixin {
+class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   ScrollController _scrollController;
 
@@ -45,7 +46,10 @@ class _MarqueeState extends State<Marquee>
     final Size txtSize = _textSize(widget.str, widget.textStyle);
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: (txtSize.width / widget.containerWidth * widget.baseMilliseconds).ceil()),
+      duration: Duration(
+          milliseconds:
+              (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
+                  .ceil()),
     );
     _animationController.drive(
       CurveTween(curve: Curves.easeOutQuint),
@@ -58,7 +62,7 @@ class _MarqueeState extends State<Marquee>
         _animationController.reset();
         _animationController.forward();
       } else if (_scrollController.offset <
-          txtSize.width * _animationController.value &&
+              txtSize.width * _animationController.value &&
           _scrollController.offset < txtSize.width) {
         _scrollController.animateTo(txtSize.width * _animationController.value,
             duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
@@ -83,8 +87,8 @@ class _MarqueeState extends State<Marquee>
       child: Text(
         widget.str,
         style: widget.textStyle,
+        strutStyle: widget.strutStyle,
       ),
     );
   }
-
 }
