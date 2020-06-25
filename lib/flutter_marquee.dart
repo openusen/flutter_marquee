@@ -80,14 +80,20 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      physics: NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      child: Text(
-        widget.str,
-        style: widget.textStyle,
-        strutStyle: widget.strutStyle,
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (OverscrollIndicatorNotification overScroll) {
+        overScroll.disallowGlow();
+        return false;
+      },
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        physics: NeverScrollableScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        child: Text(
+          widget.str,
+          style: widget.textStyle,
+          strutStyle: widget.strutStyle,
+        ),
       ),
     );
   }
