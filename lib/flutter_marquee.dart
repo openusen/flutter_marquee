@@ -49,28 +49,31 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: Duration(
           milliseconds:
-              (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
-                  .ceil()),
+          (txtSize.width / widget.containerWidth * widget.baseMilliseconds)
+              .ceil()),
     );
     _animationController.drive(
       CurveTween(curve: Curves.easeOutQuint),
     );
 
-    listener = () async {
-      if (_animationController.isCompleted) {
-        _scrollController.jumpTo(0.0);
-        await Future.delayed(new Duration(seconds: 1));
-        _animationController.reset();
-        _animationController.forward();
-      } else if (_scrollController.offset <
-          txtSize.width * _animationController.value &&
-          _scrollController.offset < txtSize.width) {
-        _scrollController.animateTo(txtSize.width * _animationController.value,
-            duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
-      }
-    };
-    _animationController.addListener(listener);
-    _animationController.forward();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_){
+      listener = () async {
+        if (_animationController.isCompleted) {
+          _scrollController.jumpTo(0.0);
+          await Future<dynamic>.delayed(const Duration(seconds: 1));
+          _animationController.reset();
+          _animationController.forward();
+        } else if (_scrollController.offset <
+            txtSize.width * _animationController.value &&
+            _scrollController.offset < txtSize.width) {
+          _scrollController.animateTo(txtSize.width * _animationController.value,
+              duration: const Duration(milliseconds: 100), curve: Curves.easeOutQuint);
+        }
+      };
+      _animationController.addListener(listener);
+      _animationController.forward();
+    });
   }
 
   @override
