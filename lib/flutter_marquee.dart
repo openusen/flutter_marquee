@@ -27,6 +27,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   ScrollController _scrollController;
   VoidCallback listener;
+  bool disposeFlag = false;
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
@@ -39,7 +40,6 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scrollController = ScrollController(
       initialScrollOffset: 0.0,
@@ -62,8 +62,10 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
         if (_animationController.isCompleted) {
           _scrollController.jumpTo(0.0);
           await Future<dynamic>.delayed(const Duration(seconds: 1));
-          _animationController.reset();
-          _animationController.forward();
+          if (!disposeFlag) {
+            _animationController.reset();
+            _animationController.forward();
+          }
         } else if (_scrollController.offset <
             txtSize.width * _animationController.value &&
             _scrollController.offset < txtSize.width) {
@@ -87,8 +89,10 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
         if (_animationController.isCompleted) {
           _scrollController.jumpTo(0.0);
           await Future.delayed(new Duration(seconds: 1));
-          _animationController.reset();
-          _animationController.forward();
+          if (!disposeFlag) {
+            _animationController.reset();
+            _animationController.forward();
+          }
         } else if (_scrollController.offset <
             txtSize.width * _animationController.value &&
             _scrollController.offset < txtSize.width) {
@@ -109,7 +113,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
-    // TODO: implement dispose
+    disposeFlag = true;
     super.dispose();
   }
 
