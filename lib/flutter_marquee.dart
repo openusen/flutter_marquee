@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 /// A Calculator.
 class Marquee extends StatefulWidget {
   Marquee(
-      {Key key,
-      @required this.str,
-      @required this.containerWidth,
+      {
+      required this.str,
+      required this.containerWidth,
       this.textStyle = const TextStyle(),
       this.strutStyle = const StrutStyle(),
-      this.baseMilliseconds = 4000})
-      : super(key: key);
+      this.baseMilliseconds = 4000});
 
   final String str;
   final double containerWidth;
@@ -24,9 +23,9 @@ class Marquee extends StatefulWidget {
 }
 
 class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-  ScrollController _scrollController;
-  VoidCallback listener;
+  late AnimationController _animationController;
+  late ScrollController _scrollController;
+  late VoidCallback listener;
   bool disposeFlag = false;
 
   Size _textSize(String text, TextStyle style) {
@@ -57,7 +56,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     );
 
     WidgetsBinding.instance
-        .addPostFrameCallback((_){
+        ?.addPostFrameCallback((_){
       listener = () async {
         if (_animationController.isCompleted) {
           _scrollController.jumpTo(0.0);
