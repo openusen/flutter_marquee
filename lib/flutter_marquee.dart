@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 
 /// A Calculator.
 class Marquee extends StatefulWidget {
-  Marquee(
-      {
-      required this.str,
-      required this.containerWidth,
-      this.textStyle = const TextStyle(),
-      this.strutStyle = const StrutStyle(),
-      this.baseMilliseconds = 4000});
+  const Marquee(
+      {required this.str,
+        required this.containerWidth,
+        this.textStyle = const TextStyle(),
+        this.strutStyle = const StrutStyle(),
+        this.baseMilliseconds = 4000});
 
   final String str;
   final double containerWidth;
@@ -55,8 +54,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       CurveTween(curve: Curves.easeOutQuint),
     );
 
-    WidgetsBinding.instance
-        ?.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       listener = () async {
         if (_animationController.isCompleted) {
           _scrollController.jumpTo(0.0);
@@ -68,8 +66,10 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
         } else if (_scrollController.offset <
             txtSize.width * _animationController.value &&
             _scrollController.offset < txtSize.width) {
-          _scrollController.animateTo(txtSize.width * _animationController.value,
-              duration: const Duration(milliseconds: 100), curve: Curves.easeOutQuint);
+          _scrollController.animateTo(
+              txtSize.width * _animationController.value,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeOutQuint);
         }
       };
       _animationController.addListener(listener);
@@ -87,7 +87,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       listener = () async {
         if (_animationController.isCompleted) {
           _scrollController.jumpTo(0.0);
-          await Future.delayed(new Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           if (!disposeFlag) {
             _animationController.reset();
             _animationController.forward();
@@ -95,8 +95,10 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
         } else if (_scrollController.offset <
             txtSize.width * _animationController.value &&
             _scrollController.offset < txtSize.width) {
-          _scrollController.animateTo(txtSize.width * _animationController.value,
-              duration: Duration(milliseconds: 100), curve: Curves.easeOutQuint);
+          _scrollController.animateTo(
+              txtSize.width * _animationController.value,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeOutQuint);
         }
       };
       _animationController.addListener(listener);
@@ -120,12 +122,12 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (OverscrollIndicatorNotification overScroll) {
-        overScroll.disallowGlow();
+        overScroll.disallowIndicator();
         return false;
       },
       child: SingleChildScrollView(
         controller: _scrollController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         child: Text(
           widget.str,
